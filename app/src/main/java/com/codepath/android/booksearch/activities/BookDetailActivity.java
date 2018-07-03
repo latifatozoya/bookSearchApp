@@ -68,23 +68,23 @@ public class BookDetailActivity extends AppCompatActivity {
         GlideApp.with(getApplicationContext())
                 .load(Uri.parse(book.getCoverUrl()))
                 .placeholder(R.drawable.ic_nocover)
-//                .listener(new RequestListener<Drawable>() {
-//
-//                    @Override
-//                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-//
-//                        return false;
-//                    }
-//
-//                    @Override
-//                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-//                        prepareShareIntent(((BitmapDrawable) resource).getBitmap());
-//                        attachShareIntentAction();
-//
-//                        return false;
-//                    }
-//
-//                 })
+                .listener(new RequestListener<Drawable>() {
+
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        prepareShareIntent(((BitmapDrawable) resource).getBitmap());
+                        attachShareIntentAction();
+
+                        return false;
+                    }
+
+                 })
                 .into(ivBookCover);
 
 
@@ -99,6 +99,7 @@ public class BookDetailActivity extends AppCompatActivity {
         MenuItem item = menu.findItem(R.id.menu_item_share);
         miShareAction = (ShareActionProvider) MenuItemCompat.getActionProvider(item);
 
+        attachShareIntentAction();
         return true;
     }
 
@@ -117,81 +118,80 @@ public class BookDetailActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-//    public void prepareShareIntent(Bitmap drawableImage) {
-//
-//        // Fetch Bitmap Uri locally
-//
-//        Uri bmpUri = getBitmapFromDrawable(drawableImage);// see previous remote images section and notes for API > 23
-//
-//        // Construct share intent as described above based on bitmap
-//
-//        shareIntent = new Intent();
-//
-//        shareIntent.setAction(Intent.ACTION_SEND);
-//
-//        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
-//
-//        shareIntent.setType("image/*");
-//
-//    }
-//
-//
-//
-//// Attaches the share intent to the share menu item provider
-//
-//    public void attachShareIntentAction() {
-//
-//        if (miShareAction != null && shareIntent != null)
-//
-//            miShareAction.setShareIntent(shareIntent);
-//
-//    }
-//
-//    // Method when launching drawable within Glide
-//
-//    public Uri getBitmapFromDrawable(Bitmap bmp){
-//
-//
-//
-//        // Store image to default external storage directory
-//
-//        Uri bmpUri = null;
-//
-//        try {
-//
-//            // Use methods on Context to access package-specific directories on external storage.
-//
-//            // This way, you don't need to request external read/write permission.
-//
-//            // See https://youtu.be/5xVh-7ywKpE?t=25m25s
-//
-//            File file =  new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "share_image_" + System.currentTimeMillis() + ".png");
-//
-//            FileOutputStream out = new FileOutputStream(file);
-//
-//            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
-//
-//            out.close();
-//
-//
-//
-//            // wrap File object into a content provider. NOTE: authority here should match authority in manifest declaration
-//
-//            bmpUri = FileProvider.getUriForFile(BookDetailActivity.this, "com.codepath.fileprovider", file);  // use this version for API >= 24
-//
-//
-//
-//            // **Note:** For API < 24, you may use bmpUri = Uri.fromFile(file);
-//
-//
-//
-//        } catch (IOException e) {
-//
-//            e.printStackTrace();
-//
-//        }
-//
-//        return bmpUri;
-//
-//    }
+    public void prepareShareIntent(Bitmap drawableImage) {
+
+        // Fetch Bitmap Uri locally
+
+        Uri bmpUri = getBitmapFromDrawable(drawableImage);// see previous remote images section and notes for API > 23
+
+        // Construct share intent as described above based on bitmap
+
+        shareIntent = new Intent();
+
+        shareIntent.setAction(Intent.ACTION_SEND);
+
+        shareIntent.putExtra(Intent.EXTRA_STREAM, bmpUri);
+
+        shareIntent.setType("*/*");
+
+    }
+
+
+
+// Attaches the share intent to the share menu item provider
+
+    public void attachShareIntentAction() {
+
+        if (miShareAction != null && shareIntent != null)
+
+            miShareAction.setShareIntent(shareIntent);
+
+    }
+
+    // Method when launching drawable within Glide
+
+    public Uri getBitmapFromDrawable(Bitmap bmp){
+
+
+
+        // Store image to default external storage directory
+
+        Uri bmpUri = null;
+
+        try {
+
+            // Use methods on Context to access package-specific directories on external storage.
+
+            // This way, you don't need to request external read/write permission.
+
+            // See https://youtu.be/5xVh-7ywKpE?t=25m25s
+
+            File file =  new File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), "share_image_" + System.currentTimeMillis() + ".png");
+
+            FileOutputStream out = new FileOutputStream(file);
+
+            bmp.compress(Bitmap.CompressFormat.PNG, 90, out);
+
+            out.close();
+
+
+
+            // wrap File object into a content provider. NOTE: authority here should match authority in manifest declaration
+
+            //bmpUri = FileProvider.getUriForFile(BookDetailActivity.this, "com.codepath.fileprovider", file);  // use this version for API >= 24
+
+
+            bmpUri = Uri.fromFile(file);
+
+
+
+        } catch (IOException e) {
+
+            e.printStackTrace();
+
+        }
+
+        return bmpUri;
+
+    }
 }
